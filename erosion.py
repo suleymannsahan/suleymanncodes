@@ -1,28 +1,21 @@
 import cv2
-import numpy as np
+
+image_path = "/home/suleymann/Pictures/KGG.jpeg"
+
+img = cv2.imread(image_path, 1)
+resize_img = cv2.resize(img, (512,512))
 
 
-image = cv2.imread("/home/suleymann/Pictures/KGG.jpeg")
+_, binary_image = cv2.threshold(resize_img,20,50,cv2.THRESH_BINARY)
+boyutlandirma = cv2.getStructuringElement(cv2.MORPH_RECT, (17, 17))
+erosion_img = cv2.erode(binary_image, boyutlandirma, iterations=1)
 
-resize_image = cv2.resize(image, (512, 512))
-cv2.namedWindow("EROSION IMAGE")
 
-def nothing(x):
-    pass
+cv2.imshow("RESIZE IMAGE", resize_img)
+cv2.imshow("BINARY IMAGE", binary_image)
+cv2.imshow("EROSION IMAGE", erosion_img)
+cv2.imwrite("EROSION.jpg", erosion_img)
 
-cv2.createTrackbar("EROSION", "EROSION IMAGE", 1, 255, nothing)
-
-cv2.imshow("IMAGE", resize_image)
-while(1):
-    if cv2.waitKey(1) & 0xFF == ord("q"):
-        break
-    
-    erosion = cv2.getTrackbarPos("EROSION", "EROSION IMAGE")
-    
-    kernel = np.ones((erosion, erosion), np.uint8)
-    erosion_image = cv2.erode(resize_image, kernel, iterations=1)
-    print(erosion)
-
-    cv2.imshow("EROSION IMAGE", erosion_image)
-
+cv2.waitKey(0)
 cv2.destroyAllWindows()
+
